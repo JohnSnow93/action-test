@@ -1,0 +1,33 @@
+name: Node Request Demo
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Install dependencies
+        run: yarn
+      - name: Start Collection
+        run: yarn run start
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: dist # The folder the action should deploy.
+          CLEAN: false # Automatically remove deleted files from the deploy branch
+
+#      - name: Build and Deploy
+#        uses: JamesIves/github-pages-deploy-action@master
+#        env:
+#          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+#          BRANCH: gh-pages
+#          FOLDER: build
+#          BUILD_SCRIPT: npm install && npm run build

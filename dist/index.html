@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Charts</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.js"></script>
+
+  <script src="/jslib/echarts-wordcloud.min.js"></script>
+
+  <style>
+    .container {
+      width: 1200px;
+      margin: 0 auto;
+    }
+    #salary-chart{
+      height: 80vh;
+    }
+    #word-cloud {
+      height: 100vh;
+    }
+    .charts {
+      height: 550px;
+      display: flex;
+    }
+    .charts > div{
+      flex: 1;
+      width: 33%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+
+<div id="salary-chart" class="container">
+
+</div>
+
+<div id="word-cloud" class="container">
+
+</div>
+
+<div class="charts container">
+  <div id="company-scale"></div>
+  <div id="salary-percent"></div>
+  <div id="area-job-count"></div>
+</div>
+
+<script async defer src="charts.js"></script>
+</body>
+</html>
