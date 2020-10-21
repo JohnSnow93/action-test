@@ -7,7 +7,7 @@ const {sleep, getKeyWords, processSalary, processSalaryLevel, yearLevel} = requi
 let cookies = '';
 let publicHeaders = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36",
-    "Referer": "https://www.lagou.com/jobs/list_%E5%89%8D%E7%AB%AF?labelWords=&fromSearch=true&suginput=",
+    "Referer": "https://www.lagou.com/jobs/list_前端?labelWords=&fromSearch=true&suginput=",
     "Content-Type": "application/x-www-form-urlencoded;charset = UTF-8"
 };
 
@@ -43,7 +43,7 @@ function processData(jobDataArray = []){
 
 async function getPageSessionCookie(){
     console.log('正在刷新Cookie'.bgMagenta);
-    const res = await request.get("https://www.lagou.com/jobs/list_%E5%89%8D%E7%AB%AF?city=%E6%88%90%E9%83%BD&labelWords=&fromSearch=true&suginput=", {
+    const res = await request.get("https://www.lagou.com/jobs/list_前端?city=成都&labelWords=&fromSearch=true&suginput=", {
         resolveWithFullResponse: true,
         headers: {
             ...publicHeaders
@@ -52,18 +52,17 @@ async function getPageSessionCookie(){
     return res.headers['set-cookie'];
 }
 
-async function fetchPosition(page = 1, first = true) {
+async function fetchPosition(page = 1) {
     console.log(`开始获取第${page}页数据`.green);
     try {
-        const res = await request.post("https://www.lagou.com/jobs/positionAjax.json?needAddtionalResult=false&city=%E6%88%90%E9%83%BD", {
-            // resolveWithFullResponse: true,
+        const res = await request.post("https://www.lagou.com/jobs/positionAjax.json?needAddtionalResult=false&city=成都", {
             headers: {
                 'Cookie': cookies,
                 ...publicHeaders,
             },
             json: true,
             body: qs.stringify({
-                first,
+                first: page === 1,
                 pn: page,
                 kd: '前端'
             })
@@ -90,24 +89,27 @@ async function fetchPosition(page = 1, first = true) {
 async function start() {
     console.log("开始获取拉钩网数据".blue);
     let page = 1;
-    let first = true;
+    // let first = true;
     let res = [];
-    cookies = await getPageSessionCookie();
+    // cookies = await getPageSessionCookie();
     let maxPage = 30;
     while (page <= maxPage && !(res instanceof Error)){
-        let { result, totalCount } = await fetchPosition(page, first);
+        if(page % 4 === 0){
+            cookies = await getPageSessionCookie();
+        }
+        let { result, totalCount } = await fetchPosition(
+            page,
+            // first
+        );
         if(page === 1){
-          maxPage = (totalCount / 15 > 29)  ? maxPage : Math.ceil(totalCount / 15);
+          maxPage = Math.min(maxPage, Math.ceil(totalCount / 15));
           console.log(`最大页数${maxPage}`.bgGreen)
         }
         await sleep(3000 * Math.random() + page * 2000);
-        if(page % 4 === 0){
-          cookies = await getPageSessionCookie();
-        }
         if(result.length < 15) break;
         res = res.concat(result);
         page ++;
-        first = false
+        // first = false
     }
     console.info('请求结束'.blue);
 
