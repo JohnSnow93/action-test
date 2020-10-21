@@ -2,7 +2,6 @@ const request = require("request-promise");
 const qs = require('qs');
 const colors = require('colors');
 const fs = require("fs");
-const cheerio = require('cheerio');
 const {sleep, getKeyWords, processSalary, processSalaryLevel, yearLevel} = require('./utils');
 
 let cookies = '';
@@ -94,7 +93,7 @@ async function start() {
     let first = true;
     let res = [];
     cookies = await getPageSessionCookie();
-    let maxPage = 2;
+    let maxPage = 30;
     while (page <= maxPage && !(res instanceof Error)){
         let { result, totalCount } = await fetchPosition(page, first);
         if(page === 1){

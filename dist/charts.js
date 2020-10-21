@@ -27,7 +27,7 @@ function setWordCloud(data) {
       shape: 'circle',
       width: '80%',
       height: '80%',
-      sizeRange: [12, 60],
+      sizeRange: [8, 60],
       rotationRange: [-90, 90],
       rotationStep: 45,
       drawOutOfBound: true,
