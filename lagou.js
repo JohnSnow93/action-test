@@ -5,9 +5,11 @@ const fs = require("fs");
 const {sleep, getKeyWords, processSalary, processSalaryLevel, yearLevel} = require('./utils');
 
 let cookies = '';
+const city = encodeURIComponent('成都');
+const jobName = encodeURIComponent('前端');
 let publicHeaders = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36",
-    "Referer": "https://www.lagou.com/jobs/list_前端?labelWords=&fromSearch=true&suginput=",
+    "Referer": `https://www.lagou.com/jobs/list_${jobName}?labelWords=&fromSearch=true&suginput=`,
     "Content-Type": "application/x-www-form-urlencoded;charset = UTF-8"
 };
 
@@ -43,7 +45,7 @@ function processData(jobDataArray = []){
 
 async function getPageSessionCookie(){
     console.log('正在刷新Cookie'.bgMagenta);
-    const res = await request.get("https://www.lagou.com/jobs/list_前端?city=成都&labelWords=&fromSearch=true&suginput=", {
+    const res = await request.get(`https://www.lagou.com/jobs/list_${jobName}?city=${city}&labelWords=&fromSearch=true&suginput=`, {
         resolveWithFullResponse: true,
         headers: {
             ...publicHeaders
@@ -55,7 +57,8 @@ async function getPageSessionCookie(){
 async function fetchPosition(page = 1) {
     console.log(`开始获取第${page}页数据`.green);
     try {
-        const res = await request.post("https://www.lagou.com/jobs/positionAjax.json?needAddtionalResult=false&city=成都", {
+        const res = await request.post(`https://www.lagou.com/jobs/positionAjax.json?needAddtionalResult=false&city=${city}`, {
+            // resolveWithFullResponse: true,
             headers: {
                 'Cookie': cookies,
                 ...publicHeaders,
@@ -92,7 +95,7 @@ async function start() {
     // let first = true;
     let res = [];
     // cookies = await getPageSessionCookie();
-    let maxPage = 30;
+    let maxPage = 5;
     while (page <= maxPage && !(res instanceof Error)){
         if(page % 4 === 0){
             cookies = await getPageSessionCookie();
