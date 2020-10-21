@@ -97,7 +97,7 @@ async function start() {
     // cookies = await getPageSessionCookie();
     let maxPage = 5;
     while (page <= maxPage && !(res instanceof Error)){
-        if(page % 4 === 0){
+        if(page % 4 === 0 || page === 1){
             cookies = await getPageSessionCookie();
         }
         let { result, totalCount } = await fetchPosition(
