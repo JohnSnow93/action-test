@@ -1,7 +1,7 @@
 $(document).ready(function () {
   $.ajax({
     type: "GET",
-    url: "/chartsData.json",
+    url: "./chartsData.json",
     dataType: "json",
     success: function(res){
       setSalaryChart(res.chartA);
