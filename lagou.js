@@ -116,14 +116,17 @@ async function start() {
     }
     console.info('请求结束'.blue);
 
-    fs.writeFile(__dirname + '/result/lagouResult.js', 'module.exports = ' + JSON.stringify(res), (e) => {
-        if(!e){
-            console.log('成功写入文件'.bgGreen);
-        } else {
-            console.log('写入出错'.bgYellow);
-            console.log(e);
-        }
-    });
+    await new Promise((resolve, reject) => {
+        fs.writeFile(__dirname + '/result/lagouResult.js', 'module.exports = ' + JSON.stringify(res), (e) => {
+            if(!e){
+                console.log('成功写入文件'.bgGreen);
+            } else {
+                console.log('写入出错'.bgYellow);
+                console.log(e);
+            }
+            resolve();
+        });
+    })
 }
 
 module.exports = start;
