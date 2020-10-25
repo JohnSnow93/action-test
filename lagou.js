@@ -55,7 +55,6 @@ async function getPageSessionCookie(){
 }
 
 async function fetchPosition(page = 1) {
-    console.log(`开始获取第${page}页数据`.green);
     try {
         const res = await request.post(`https://www.lagou.com/jobs/positionAjax.json?needAddtionalResult=false&city=${city}`, {
             // resolveWithFullResponse: true,
@@ -83,46 +82,44 @@ async function fetchPosition(page = 1) {
         }
         return { result, totalCount: res.content.positionResult.totalCount };
     } catch (e) {
-        console.warn(`请求第${page}页发生错误，错误信息如下：`.yellow);
+        console.warn(`请求第${page}页发生错误，错误信息如下：`);
         console.warn(e);
         return { result: [] };
     }
 }
 
 async function start() {
-    console.log("开始获取拉钩网数据".blue);
+    console.log("开始获取拉钩网数据");
     let page = 1;
-    // let first = true;
     let res = [];
-    // cookies = await getPageSessionCookie();
-    let maxPage = 5;
+    let maxPage = 5; // 根据网站显示，最大页数是30页，每页15条
     while (page <= maxPage && !(res instanceof Error)){
+        // 每4页需要刷新一次cookie
         if(page % 4 === 0 || page === 1){
             cookies = await getPageSessionCookie();
         }
-        let { result, totalCount } = await fetchPosition(
-            page,
-            // first
-        );
+        // 获取每页的数据和所有数据的总长度
+        let { result, totalCount } = await fetchPosition(page);
         if(page === 1){
-          maxPage = Math.min(maxPage, Math.ceil(totalCount / 15));
-          console.log(`最大页数${maxPage}`.bgGreen)
+            // 如果数据分页数不足30页，则maxPage需要调整哦
+            maxPage = Math.min(maxPage, Math.ceil(totalCount / 15));
+            console.log(`最大页数${maxPage}`)
         }
-        await sleep(3000 * Math.random() + page * 2000);
+        // 每次请求间进行一些延时
+        await sleep(3000 * Math.random() + page * 1000);
         if(result.length < 15) break;
         res = res.concat(result);
         page ++;
-        // first = false
     }
-    console.info('请求结束'.blue);
+    console.info('请求结束');
 
+    // 将请求的数据保存到文件中，保存位置是/result/lagouResult.js
     await new Promise((resolve, reject) => {
         fs.writeFile(__dirname + '/result/lagouResult.js', 'module.exports = ' + JSON.stringify(res), (e) => {
             if(!e){
-                console.log('成功写入文件'.bgGreen);
+                console.log('成功写入文件');
             } else {
-                console.log('写入出错'.bgYellow);
-                console.log(e);
+                console.log('写入出错', e);
             }
             resolve();
         });
