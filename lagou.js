@@ -92,7 +92,7 @@ async function start() {
     console.log("开始获取拉钩网数据");
     let page = 1;
     let res = [];
-    let maxPage = 5; // 根据网站显示，最大页数是30页，每页15条
+    let maxPage = 30; // 根据网站显示，最大页数是30页，每页15条
     while (page <= maxPage && !(res instanceof Error)){
         // 每4页需要刷新一次cookie
         if(page % 4 === 0 || page === 1){
