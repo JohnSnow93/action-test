@@ -1,11 +1,11 @@
 const lagou = require("./lagou");
 const boss = require("./boss");
-const processRawDataForEcharts = require("./processRawDataForEcharts");
+const processData = require("./processData");
 
 async function start() {
   await lagou();
   await boss();
-  await processRawDataForEcharts();
+  await processData();
 }
 
 start();
