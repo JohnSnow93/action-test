@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Charts</title>
+  <title>前端招聘岗位统计(成都)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.js"></script>
@@ -10,6 +10,28 @@
   <script src="./jslib/echarts-wordcloud.min.js"></script>
 
   <style>
+    body{
+      margin: 0;
+      padding: 0;
+    }
+    .header {
+      position: sticky;
+      background: #fff;
+      top: 0;
+      height: 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #333;
+      padding: 0 10px;
+      box-shadow: 0 2px 8px #f0f1f2;
+    }
+    .header > h1 {
+      margin: 0;
+      padding: 0;
+      font-size: 26px;
+      color: inherit;
+    }
     .container {
       width: 1200px;
       margin: 0 auto;
@@ -34,6 +56,10 @@
   </style>
 </head>
 <body>
+<header class="header">
+  <h1>前端招聘岗位统计(成都)</h1>
+  <span>总数据量NaN</span>
+</header>
 
 <div id="salary-chart" class="container">
 
@@ -49,6 +75,6 @@
   <div id="area-job-count"></div>
 </div>
 
-<script async defer src="./charts.js"></script>
+<script async defer src="./initChart.js"></script>
 </body>
 </html>
