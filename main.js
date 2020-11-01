@@ -3,7 +3,7 @@ const boss = require("./boss");
 const processData = require("./processData");
 
 async function start() {
-  await lagou();
+  // await lagou();
   await boss();
   await processData();
 }

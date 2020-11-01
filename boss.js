@@ -23,13 +23,13 @@ function formatJobYear(str){
 
 async function fetchUrls(browser) {
 
-    console.log('开始批量获取URL'.green);
+    console.log('开始批量获取URL');
     const page = await browser.newPage();
 
     let urls = [];
 
     for (let i = 1; i <= 1; i++) {
-        console.log(`正在获取第${i}页地址`.green);
+        console.log(`正在获取第${i}页地址`);
         if (i === 1) {
             await page.goto(generateUrl(i));
         }
@@ -104,9 +104,10 @@ async function fetchDetail(url, browser) {
 
 async function run() {
     const browser = await puppeteer.launch({
-        headless: false
+        headless: true
     });
     let detailList = [];
+    console.log('开始获Boss直聘网数据')
     const urls = (await fetchUrls(browser)) || [];
     for (let i = 0; i < urls.length; i++) {
         try {
@@ -131,7 +132,5 @@ async function run() {
 
     await browser.close();
 }
-
-run();
 
 module.exports = run;
