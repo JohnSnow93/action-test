@@ -213,13 +213,15 @@ function getPieChartData(data){
 }
 
 module.exports = function () {
-    const data = require('./result/lagouResult.js');
+    const lagouData = require('./result/lagouResult.js');
+    const bossData = require('./result/bossZhipinResult.js');
+    const data = [...lagouData, ...bossData];
     const echartsData = {
         chartA:  getChartA(data),
         cloudWord: getWordCloudData(data),
         pie: getPieChartData(data)
     }
-    console.log('准备写入echartsData.json');
+    console.log('准备写入chartsData.json');
     fs.writeFile(__dirname + '/dist/chartsData.json', JSON.stringify(echartsData), (e) => {
         if(!e){
             console.log('成功写入文件'.bgGreen);

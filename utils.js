@@ -62,6 +62,7 @@ function getKeyWords(text = ""){
 
 function processSalary(salaryString = ""){
   if(!salaryString) return [];
+  if(salaryString.includes('薪') && salaryString.includes('·')) salaryString = salaryString.split('.')[0];
   let salaryArr = salaryString.trim().split('-');
   if(salaryArr.length > 1){
     let start = parseInt(salaryArr[0]);
