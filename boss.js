@@ -30,8 +30,9 @@ async function fetchUrls(browser) {
 
     for (let i = 1; i <= 1; i++) {
         console.log(`正在获取第${i}页地址`);
+        await page.setDefaultNavigationTimeout(0)
         if (i === 1) {
-            await page.goto(generateUrl(i));
+            await page.goto(generateUrl(i), { timeout: 0 });
         }
 
         let result = await page.$$eval('.job-primary .primary-box', linkElArray => {
@@ -107,28 +108,34 @@ async function run() {
         headless: true
     });
     let detailList = [];
-    console.log('开始获Boss直聘网数据')
-    const urls = (await fetchUrls(browser)) || [];
-    for (let i = 0; i < urls.length; i++) {
-        try {
-            console.log(`正在获取第${i}个详情`.green);
-            detailList.push(await fetchDetail(urls[i], browser));
-        } catch (e) {
-            console.log(`获取详情时发生错误：${urls[i]}`.yellow);
-        }
+    let urls = [];
+    console.log('开始获Boss直聘网数据');
+    try {
+        urls = (await fetchUrls(browser)) || [];
+    } catch (e) {
+        console.log(e);
     }
-
-    await new Promise((resolve, reject) => {
-        fs.writeFile(__dirname + '/result/bossZhipinResult.js', 'module.exports = ' + JSON.stringify(detailList), (e) => {
-            if(!e){
-                console.log('成功写入文件'.bgGreen);
-            } else {
-                console.log('写入出错'.bgYellow);
-                console.log(e);
-            }
-            resolve();
-        });
-    })
+    console.log(urls)
+    // for (let i = 0; i < urls.length; i++) {
+    //     try {
+    //         console.log(`正在获取第${i}个详情`.green);
+    //         detailList.push(await fetchDetail(urls[i], browser));
+    //     } catch (e) {
+    //         console.log(`获取详情时发生错误：${urls[i]}`.yellow);
+    //     }
+    // }
+    //
+    // await new Promise((resolve, reject) => {
+    //     fs.writeFile(__dirname + '/result/bossZhipinResult.js', 'module.exports = ' + JSON.stringify(detailList), (e) => {
+    //         if(!e){
+    //             console.log('成功写入文件'.bgGreen);
+    //         } else {
+    //             console.log('写入出错'.bgYellow);
+    //             console.log(e);
+    //         }
+    //         resolve();
+    //     });
+    // })
 
     await browser.close();
 }

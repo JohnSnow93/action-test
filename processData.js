@@ -217,9 +217,10 @@ module.exports = function () {
     const bossData = require('./result/bossZhipinResult.js');
     const data = [...lagouData, ...bossData];
     const echartsData = {
+        total: getPieChartData(data.length),
         chartA:  getChartA(data),
         cloudWord: getWordCloudData(data),
-        pie: getPieChartData(data)
+        pie: getPieChartData(data),
     }
     console.log('准备写入chartsData.json');
     fs.writeFile(__dirname + '/dist/chartsData.json', JSON.stringify(echartsData), (e) => {
