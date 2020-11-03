@@ -32,6 +32,7 @@ async function configPageInstance(page){
             get: () => false,
         });
     });
+    await page.setDefaultNavigationTimeout(0);
 }
 
 async function fetchUrls(browser) {
@@ -41,10 +42,10 @@ async function fetchUrls(browser) {
     await configPageInstance(page);
     let urls = [];
 
-    for (let i = 1; i <= 1; i++) {
+    for (let i = 1; i <= 10; i++) {
         console.log(`正在获取第${i}页地址`);
         if (i === 1) {
-            await page.goto(generateUrl(i), { timeout: 0 });
+            await page.goto(generateUrl(i));
         }
 
         let result = await page.$$eval('.job-primary .primary-box', linkElArray => {
@@ -84,7 +85,7 @@ async function fetchUrls(browser) {
 async function fetchDetail(url, browser) {
     const page = await browser.newPage();
     await configPageInstance(page);
-    await page.goto(`https://www.zhipin.com${url}`, { timeout: 0 });
+    await page.goto(`https://www.zhipin.com${url}`);
     let jobDescription = await page.$eval('.job-sec', el => el.innerText);
     let keywords = getKeyWords(jobDescription);
     let salary = await page.$eval('.salary', el => el.innerText);
