@@ -7,6 +7,7 @@ $(document).ready(function () {
       setSalaryChart(res.chartA);
       setWordCloud(res.cloudWord);
       setPieChart(res.pie);
+      document.querySelector('.total-count').innerHTML = res.total || 0;
     }
   });
 
