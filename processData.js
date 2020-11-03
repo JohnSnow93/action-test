@@ -132,7 +132,7 @@ function getChartA(data) {
 function getWordCloudData(data){
 
     const countObj = {};
-    data.forEach((jobData) => {
+    (data || []).forEach((jobData) => {
         jobData.keywords && jobData.keywords.forEach((keyword) => {
             if(countObj[keyword]){
                 countObj[keyword] += 1;
