@@ -213,8 +213,8 @@ function getPieChartData(data){
 }
 
 module.exports = function () {
-    const lagouData = require('./result/lagouResult.js');
-    const bossData = require('./result/bossZhipinResult.js');
+    const lagouData = require('./result/lagouResult.js') || [];
+    const bossData = require('./result/bossZhipinResult.js') || [];
     const data = [...lagouData, ...bossData];
     const echartsData = {
         total: getPieChartData(data.length),

@@ -42,7 +42,7 @@ async function fetchUrls(browser) {
     await configPageInstance(page);
     let urls = [];
 
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i <= 10; i++)  {
         console.log(`正在获取第${i}页地址`);
         if (i === 1) {
             await page.goto(generateUrl(i));
