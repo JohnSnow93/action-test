@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 const {URL} = require("url");
 const fs = require('fs');
 const colors = require('colors');
+const {sleep} = require("./utils");
 const {getDistrict, getKeyWords, processSalary, processSalaryLevel, yearLevel} = require('./utils');
 
 function generateUrl(page = 1) {
@@ -21,16 +22,27 @@ function formatJobYear(str){
     return result;
 }
 
+async function configPageInstance(page){
+    await page.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.119 Safari/537.36");
+    await page.evaluateOnNewDocument(() => {
+        Object.defineProperty(navigator, 'plugins', {
+            get: () => [1, 2, 3],
+        });
+        Object.defineProperty(navigator, 'webdriver', {
+            get: () => false,
+        });
+    });
+}
+
 async function fetchUrls(browser) {
 
     console.log('开始批量获取URL');
     const page = await browser.newPage();
-
+    await configPageInstance(page);
     let urls = [];
 
     for (let i = 1; i <= 1; i++) {
         console.log(`正在获取第${i}页地址`);
-        await page.setDefaultNavigationTimeout(0)
         if (i === 1) {
             await page.goto(generateUrl(i), { timeout: 0 });
         }
@@ -51,6 +63,7 @@ async function fetchUrls(browser) {
                     // 点击下一页
                     console.log('点击下一页')
                     await Promise.all([
+                        sleep(Math.random() * 3000 + 1000),
                         page.waitForNavigation(),
                         page.click('.page > .cur + a')
                     ]);
@@ -70,7 +83,8 @@ async function fetchUrls(browser) {
 
 async function fetchDetail(url, browser) {
     const page = await browser.newPage();
-    await page.goto(url);
+    await configPageInstance(page);
+    await page.goto(`https://www.zhipin.com${url}`, { timeout: 0 });
     let jobDescription = await page.$eval('.job-sec', el => el.innerText);
     let keywords = getKeyWords(jobDescription);
     let salary = await page.$eval('.salary', el => el.innerText);
@@ -105,7 +119,8 @@ async function fetchDetail(url, browser) {
 
 async function run() {
     const browser = await puppeteer.launch({
-        headless: true
+        headless: true,
+        ignoreDefaultArgs: ["--enable-automation"]
     });
     let detailList = [];
     let urls = [];
@@ -115,29 +130,31 @@ async function run() {
     } catch (e) {
         console.log(e);
     }
-    console.log(urls)
-    // for (let i = 0; i < urls.length; i++) {
-    //     try {
-    //         console.log(`正在获取第${i}个详情`.green);
-    //         detailList.push(await fetchDetail(urls[i], browser));
-    //     } catch (e) {
-    //         console.log(`获取详情时发生错误：${urls[i]}`.yellow);
-    //     }
-    // }
-    //
-    // await new Promise((resolve, reject) => {
-    //     fs.writeFile(__dirname + '/result/bossZhipinResult.js', 'module.exports = ' + JSON.stringify(detailList), (e) => {
-    //         if(!e){
-    //             console.log('成功写入文件'.bgGreen);
-    //         } else {
-    //             console.log('写入出错'.bgYellow);
-    //             console.log(e);
-    //         }
-    //         resolve();
-    //     });
-    // })
+    for (let i = 0; i < urls.length; i++) {
+        try {
+            console.log(`正在获取第${i}个详情`.green);
+            detailList.push(await fetchDetail(urls[i], browser));
+            await sleep(Math.random() * 3000 + 1000);
+        } catch (e) {
+            console.log(`获取详情时发生错误：${urls[i]}`);
+        }
+    }
+
+    await new Promise((resolve, reject) => {
+        fs.writeFile(__dirname + '/result/bossZhipinResult.js', 'module.exports = ' + JSON.stringify(detailList), (e) => {
+            if(!e){
+                console.log('成功写入文件');
+            } else {
+                console.log('写入出错');
+                console.log(e);
+            }
+            resolve();
+        });
+    })
 
     await browser.close();
 }
+
+run();
 
 module.exports = run;
